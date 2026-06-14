@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amit Sharma — MIS Dashboards &amp; Reports</title>
+<meta name="description" content="Amit Sharma — MIS Executive & Google Apps Script Developer. Dashboards and reports: MIS, sales, attendance, inventory, workflow, performance, project tracking, HR data and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f7fb; --bg-2:#eef1f8; --paper:#ffffff;
+    --ink:#0f1b35; --ink-soft:#3c4a68; --muted:#7a87a3; --slate:#56627e;
+    --line:#e4e8f2; --indigo:#3b5bff; --indigo-dk:#2740c9; --indigo-soft:#eaeeff;
+    --amber:#f6a609; --green:#1eb980; --violet:#7b52e0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .65s ease,transform .65s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:50;background:rgba(246,247,251,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .brand{font-family:'Sora',sans-serif;font-weight:700;font-size:16px;color:var(--ink)}
+  .brand span{color:var(--indigo)}
+  .nav-links{display:flex;gap:22px;font-size:13.5px;font-weight:500;color:var(--slate)}
+  .nav-links a:hover{color:var(--indigo)}
+  .nav-cta{padding:8px 16px;border-radius:999px;background:var(--indigo);color:#fff;font-size:13.5px;font-weight:600}
+  .nav-cta:hover{background:var(--indigo-dk)}
+  @media(max-width:740px){.nav-links{display:none}}
+
+  /* HERO (slim) */
+  header{position:relative;padding:46px 0 30px;overflow:hidden}
+  header::before{content:"";position:absolute;inset:0;background:radial-gradient(720px 320px at 88% -20%,rgba(59,91,255,.10),transparent 60%);pointer-events:none}
+  .hero-in{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:26px}
+  .hero-left{max-width:640px}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--indigo);background:var(--indigo-soft);padding:6px 13px;border-radius:999px;margin-bottom:16px}
+  h1{font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(30px,4.8vw,48px);line-height:1.04;letter-spacing:-.025em;color:var(--ink)}
+  .role{font-family:'Sora',sans-serif;font-size:clamp(15px,2vw,18px);font-weight:600;color:var(--indigo);margin-top:10px}
+  .summary{max-width:560px;margin-top:14px;color:var(--slate);font-size:15.5px}
+  .actions{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:11px;font-weight:600;font-size:14.5px;transition:transform .16s ease,background .2s ease,border-color .2s ease,box-shadow .2s ease}
+  .btn svg{width:17px;height:17px}
+  .btn-call{background:var(--indigo);color:#fff;box-shadow:0 12px 26px -14px rgba(59,91,255,.7)}
+  .btn-call:hover{transform:translateY(-2px);background:var(--indigo-dk)}
+  .btn-wa{background:#e9f9f1;color:#0e8a5f;border:1px solid #bfe9d6}
+  .btn-wa:hover{transform:translateY(-2px);background:#def4ea}
+  .btn-mail{background:var(--paper);color:var(--ink);border:1px solid var(--line)}
+  .btn-mail:hover{transform:translateY(-2px);border-color:var(--indigo)}
+
+  /* hero mini pipeline with girl + boy */
+  .pipe{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:0 24px 50px -38px rgba(15,27,53,.4);padding:16px 18px;width:340px;max-width:100%}
+  .pipe h4{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .pipe svg{display:block;width:100%;height:auto}
+
+  /* SECTION */
+  section{padding:46px 0}
+  .lead{padding-top:14px}
+  .alt{background:var(--bg-2)}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:8px}
+  .sec-num{font-family:'JetBrains Mono',monospace;color:var(--indigo);font-size:13px}
+  .sec-title{font-family:'Sora',sans-serif;font-weight:700;font-size:clamp(23px,3.6vw,33px);color:var(--ink);letter-spacing:-.02em}
+  .sec-sub{color:var(--slate);font-size:14.5px;margin-bottom:30px;max-width:600px}
+
+  /* GALLERY */
+  .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  .shot{background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease}
+  .shot:hover{transform:translateY(-4px);box-shadow:0 22px 44px -30px rgba(15,27,53,.34)}
+  .shot svg{display:block;width:100%;height:auto;background:#fbfcff}
+  .shot .cap{padding:15px 19px;border-top:1px solid var(--line)}
+  .shot .cap h3{font-family:'Sora',sans-serif;font-weight:600;font-size:15.5px;color:var(--ink)}
+  .shot .cap p{color:var(--slate);font-size:12.5px;margin-top:3px}
+  .shot.wide{grid-column:1 / -1}
+  @media(max-width:720px){.gallery{grid-template-columns:1fr}.shot.wide{grid-column:auto}}
+
+  /* SYSTEM CARDS */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .card{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:22px 20px;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+  .card:hover{transform:translateY(-4px);box-shadow:0 22px 44px -30px rgba(15,27,53,.32);border-color:#cfd8ee}
+  .card .ico{width:40px;height:40px;border-radius:11px;background:var(--indigo-soft);display:flex;align-items:center;justify-content:center;margin-bottom:13px}
+  .card .ico svg{width:21px;height:21px;stroke:var(--indigo);fill:none;stroke-width:1.7}
+  .card h3{font-family:'Sora',sans-serif;font-weight:600;font-size:16.5px;color:var(--ink);margin-bottom:7px}
+  .card p{color:var(--slate);font-size:13.5px}
+  .delivered{position:absolute;top:22px;right:20px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--green)}
+  @media(max-width:860px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}}
+
+  /* SKILLS */
+  .skills{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+  .skill{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:15px 17px}
+  .skill .name{font-weight:600;color:var(--ink);font-size:13.5px;display:flex;justify-content:space-between;align-items:center}
+  .skill .name span{font-family:'JetBrains Mono',monospace;color:var(--indigo);font-size:11.5px}
+  .barwrap{height:6px;background:var(--bg-2);border-radius:999px;margin-top:10px;overflow:hidden}
+  .barwrap i{display:block;height:100%;background:linear-gradient(90deg,var(--indigo),#6f86ff);border-radius:999px;width:0;transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
+  @media(max-width:860px){.skills{grid-template-columns:repeat(2,1fr)}}
+
+  /* EXPERIENCE */
+  .xp{display:flex;flex-direction:column}
+  .xp-row{display:grid;grid-template-columns:190px 1fr;gap:24px;padding:20px 0;border-top:1px solid var(--line)}
+  .xp-row:first-child{border-top:none}
+  .xp-when{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--indigo);padding-top:3px}
+  .xp-role{font-family:'Sora',sans-serif;font-weight:600;color:var(--ink);font-size:17px}
+  .xp-co{color:var(--slate);font-size:14px;margin-top:2px}
+  @media(max-width:560px){.xp-row{grid-template-columns:1fr;gap:5px}.xp-when{padding-top:0}}
+
+  /* CONTACT */
+  .contact{text-align:center;padding:70px 0}
+  .contact h2{font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(27px,4.6vw,44px);color:var(--ink);letter-spacing:-.03em}
+  .contact p{color:var(--slate);margin-top:12px;max-width:480px;margin-left:auto;margin-right:auto}
+  .contact .actions{justify-content:center;margin-top:26px}
+  footer{padding:28px 0;text-align:center;color:var(--muted);font-size:12.5px;font-family:'JetBrains Mono',monospace;border-top:1px solid var(--line)}
+
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto}.reveal{opacity:1;transform:none}.loop{animation:none!important}.grow{width:var(--to)!important}.draw{stroke-dashoffset:0!important}}
+  :focus-visible{outline:2px solid var(--indigo);outline-offset:3px;border-radius:6px}
+
+  /* animation primitives */
+  @keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+  .loop-pulse{animation:pulse 2s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+  .loop-bob{animation:bob 2.6s ease-in-out infinite}
+  @keyframes flow{0%{offset-distance:0%;opacity:0}10%{opacity:1}90%{opacity:1}100%{offset-distance:100%;opacity:0}}
+  .flow{offset-path:path('M60 132 L150 132 L240 132');animation:flow 3s linear infinite}
+  .flow.d{animation-delay:1.5s}
+  /* on-scroll: grow bars & draw lines (toggled by JS adding .play) */
+  .gbar{height:0;transition:height 1s cubic-bezier(.2,.7,.2,1)}
+  .play .gbar{height:var(--h)}
+  .dline{stroke-dasharray:1000;stroke-dashoffset:1000;transition:stroke-dashoffset 1.4s ease}
+  .play .dline{stroke-dashoffset:0}
+  .dring{transition:stroke-dashoffset 1.3s ease}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-in">
+    <div class="brand">Amit <span>Sharma</span></div>
+    <div class="nav-links">
+      <a href="#dashboards">Dashboards</a>
+      <a href="#systems">Systems</a>
+      <a href="#skills">Skills</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <a class="nav-cta" href="tel:+919044315939">Call</a>
+  </div>
+</nav>
+
+<header>
+  <div class="wrap hero-in">
+    <div class="hero-left">
+      <span class="eyebrow">● MIS Dashboards &amp; Reports</span>
+      <h1>Reports &amp; dashboards I build for management.</h1>
+      <p class="role">Amit Sharma · MIS Executive &amp; Google Apps Script Developer</p>
+      <p class="summary">From a Google Form to a live dashboard — I capture data, automate it, and turn it into the reports a business runs on. Scroll to see the dashboards.</p>
+      <div class="actions">
+        <a class="btn btn-call" href="tel:+919044315939"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call me</a>
+        <a class="btn btn-wa" href="https://wa.me/919044315939?text=Hi%20Amit%2C%20I%20saw%20your%20portfolio" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 0 1 8.413 3.488 11.82 11.82 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.607zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>WhatsApp</a>
+        <a class="btn btn-mail" href="mailto:amitsharmabksc@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>Email</a>
+      </div>
+    </div>
+
+    <div class="pipe reveal">
+      <h4>Form → Sheet → Dashboard</h4>
+      <svg viewBox="0 0 300 170" role="img" aria-label="A girl submits a form, data flows to a sheet, a boy reviews the dashboard">
+        <path d="M60 132 L150 132 L240 132" fill="none" stroke="#e4e8f2" stroke-width="3"/>
+        <path d="M60 132 L150 132 L240 132" fill="none" stroke="#3b5bff" stroke-width="3" stroke-dasharray="5 9" class="loop-pulse"/>
+        <!-- form -->
+        <g class="loop-bob"><rect x="22" y="20" width="64" height="78" rx="9" fill="#fff" stroke="#dfe4f2"/><rect x="22" y="20" width="64" height="18" rx="9" fill="#7b52e0"/><rect x="22" y="29" width="64" height="9" fill="#7b52e0"/><text x="30" y="33" font-family="Inter" font-size="8" fill="#fff" font-weight="600">Form</text><rect x="30" y="48" width="28" height="5" rx="2" fill="#c9d0e6"/><rect x="30" y="58" width="48" height="7" rx="2" fill="#eef1f8"/><rect x="30" y="72" width="28" height="5" rx="2" fill="#c9d0e6"/><rect x="30" y="82" width="48" height="7" rx="2" fill="#eef1f8"/></g>
+        <!-- sheet -->
+        <g class="loop-bob" style="animation-delay:.6s"><rect x="118" y="24" width="64" height="72" rx="8" fill="#fff" stroke="#dfe4f2"/><rect x="118" y="24" width="64" height="15" rx="8" fill="#1eb980"/><rect x="118" y="32" width="64" height="7" fill="#1eb980"/><text x="126" y="35" font-family="Inter" font-size="8" fill="#fff" font-weight="600">Sheet</text><g stroke="#e4e8f2"><line x1="118" y1="52" x2="182" y2="52"/><line x1="118" y1="68" x2="182" y2="68"/><line x1="118" y1="84" x2="182" y2="84"/><line x1="144" y1="44" x2="144" y2="96"/><line x1="166" y1="44" x2="166" y2="96"/></g><rect x="122" y="44" width="16" height="5" rx="2" fill="#cfe9dd"/><rect x="148" y="60" width="14" height="5" rx="2" fill="#cfe9dd"/></g>
+        <!-- dashboard -->
+        <g class="loop-bob" style="animation-delay:1.2s"><rect x="214" y="18" width="66" height="82" rx="9" fill="#fff" stroke="#dfe4f2"/><rect x="214" y="18" width="66" height="15" rx="9" fill="#3b5bff"/><rect x="214" y="26" width="66" height="7" fill="#3b5bff"/><text x="221" y="29" font-family="Inter" font-size="7.5" fill="#fff" font-weight="600">Dashboard</text><rect x="222" y="42" width="24" height="15" rx="3" fill="#eaeeff"/><rect x="250" y="42" width="24" height="15" rx="3" fill="#fff3da"/><rect x="223" y="66" width="6" height="26" rx="2" fill="#cdd7ff"/><rect x="233" y="74" width="6" height="18" rx="2" fill="#3b5bff"/><rect x="243" y="70" width="6" height="22" rx="2" fill="#cdd7ff"/><circle cx="265" cy="80" r="11" fill="none" stroke="#eef1f8" stroke-width="5"/><circle cx="265" cy="80" r="11" fill="none" stroke="#1eb980" stroke-width="5" stroke-dasharray="48 22" transform="rotate(-90 265 80)"/></g>
+        <!-- GIRL at form -->
+        <g class="loop-bob" transform="translate(34,108)">
+          <ellipse cx="20" cy="54" rx="22" ry="5" fill="#eef1f8"/>
+          <rect x="8" y="28" width="24" height="26" rx="9" fill="#7b52e0"/>
+          <circle cx="20" cy="14" r="11" fill="#f1c9a5"/>
+          <path d="M9 14 q11 -16 22 0 q1 -13 -11 -13 q-12 0 -11 13z" fill="#3a2a22"/>
+          <path d="M9 14 q-2 10 1 16 M31 14 q2 10 -1 16" stroke="#3a2a22" stroke-width="3" fill="none"/>
+          <circle cx="16" cy="14" r="1.4" fill="#222"/><circle cx="24" cy="14" r="1.4" fill="#222"/>
+        </g>
+        <!-- BOY beside dashboard -->
+        <g class="loop-bob" style="animation-delay:.9s" transform="translate(150,112)">
+          <ellipse cx="18" cy="52" rx="20" ry="5" fill="#eef1f8"/>
+          <rect x="6" y="26" width="24" height="26" rx="9" fill="#3b5bff"/>
+          <circle cx="18" cy="13" r="11" fill="#f1c9a5"/>
+          <path d="M7 11 q11 -15 22 0 v-3 q-11 -10 -22 0z" fill="#2a2018"/>
+          <circle cx="14" cy="13" r="1.4" fill="#222"/><circle cx="22" cy="13" r="1.4" fill="#222"/>
+          <path d="M14 18 q4 3 8 0" stroke="#222" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+        </g>
+        <!-- moving packets -->
+        <g class="flow"><rect x="-6" y="-6" width="12" height="12" rx="3" fill="#3b5bff"/></g>
+        <g class="flow d"><circle r="6" fill="#f6a609"/></g>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<section id="dashboards" class="lead">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="sec-num">01</span><h2 class="sec-title">Dashboards &amp; reports</h2></div>
+    <p class="sec-sub reveal">Built with Forms, Sheets, AppSheet, Apps Script, Looker Studio &amp; Advanced Excel. Charts animate as you scroll. Representative UI — live versions run in Google Workspace.</p>
+    <div class="gallery">
+
+      <!-- MIS SUMMARY (wide) -->
+      <div class="shot wide reveal anim">
+        <svg viewBox="0 0 1040 290" role="img" aria-label="MIS summary report">
+          <rect width="1040" height="290" fill="#fbfcff"/><rect x="0" y="0" width="1040" height="48" fill="#fff"/><line x1="0" y1="48" x2="1040" y2="48" stroke="#e4e8f2"/>
+          <circle cx="28" cy="24" r="7" fill="#3b5bff" class="loop-pulse"/><text x="46" y="29" font-family="Sora" font-size="14" font-weight="700" fill="#0f1b35">MIS Summary — Daily / Weekly / Monthly</text><text x="900" y="29" font-family="monospace" font-size="11" fill="#7a87a3">15 Jun 2026</text>
+          <rect x="24" y="66" width="186" height="78" rx="12" fill="#fff" stroke="#e4e8f2"/><text x="40" y="90" font-family="monospace" font-size="10" fill="#7a87a3">TASKS DONE</text><text x="40" y="122" font-family="Sora" font-size="26" font-weight="700" fill="#1eb980" class="count" data-to="92" data-suffix="%">0%</text>
+          <rect x="222" y="66" width="186" height="78" rx="12" fill="#fff" stroke="#e4e8f2"/><text x="238" y="90" font-family="monospace" font-size="10" fill="#7a87a3">OPEN ITEMS</text><text x="238" y="122" font-family="Sora" font-size="26" font-weight="700" fill="#0f1b35" class="count" data-to="18">0</text>
+          <rect x="420" y="66" width="186" height="78" rx="12" fill="#fff" stroke="#e4e8f2"/><text x="436" y="90" font-family="monospace" font-size="10" fill="#7a87a3">DELAYS</text><text x="436" y="122" font-family="Sora" font-size="26" font-weight="700" fill="#f6a609" class="count" data-to="5">0</text>
+          <rect x="24" y="158" width="582" height="108" rx="12" fill="#fff" stroke="#e4e8f2"/><text x="40" y="180" font-family="monospace" font-size="10" fill="#7a87a3">DEPARTMENT OUTPUT</text>
+          <g>
+            <rect x="56" y="252" width="40" rx="3" fill="#3b5bff" class="gbar" style="--h:52px;transform:translateY(-52px)"/>
+            <rect x="116" y="252" width="40" rx="3" fill="#cdd7ff" class="gbar" style="--h:38px;transform:translateY(-38px)"/>
+            <rect x="176" y="252" width="40" rx="3" fill="#3b5bff" class="gbar" style="--h:60px;transform:translateY(-60px)"/>
+            <rect x="236" y="252" width="40" rx="3" fill="#cdd7ff" class="gbar" style="--h:32px;transform:translateY(-32px)"/>
+            <rect x="296" y="252" width="40" rx="3" fill="#3b5bff" class="gbar" style="--h:46px;transform:translateY(-46px)"/>
+            <rect x="356" y="252" width="40" rx="3" fill="#cdd7ff" class="gbar" style="--h:54px;transform:translateY(-54px)"/>
+            <rect x="416" y="252" width="40" rx="3" fill="#3b5bff" class="gbar" style="--h:42px;transform:translateY(-42px)"/>
+            <rect x="476" y="252" width="40" rx="3" fill="#cdd7ff" class="gbar" style="--h:36px;transform:translateY(-36px)"/>
+          </g>
+          <rect x="618" y="66" width="398" height="200" rx="12" fill="#fff" stroke="#e4e8f2"/><text x="636" y="90" font-family="monospace" font-size="10" fill="#7a87a3">STATUS SPLIT</text>
+          <circle cx="720" cy="170" r="58" fill="none" stroke="#eef1f8" stroke-width="30"/>
+          <circle cx="720" cy="170" r="58" fill="none" stroke="#1eb980" stroke-width="30" stroke-dasharray="0 365" class="dring" data-dash="200 165" transform="rotate(-90 720 170)"/>
+          <g font-family="Inter" font-size="13" fill="#3c4a68"><rect x="820" y="140" width="13" height="13" rx="3" fill="#1eb980"/><text x="842" y="151">Completed 68%</text><rect x="820" y="168" width="13" height="13" rx="3" fill="#f6a609"/><text x="842" y="179">In progress 21%</text><rect x="820" y="196" width="13" height="13" rx="3" fill="#cdd7ff"/><text x="842" y="207">Pending 11%</text></g>
+        </svg>
+        <div class="cap"><h3>MIS Summary Report</h3><p>Daily / weekly / monthly rollup — output, delays and status for management.</p></div>
+      </div>
+
+      <!-- WORKFLOW TRACKING -->
+      <div class="shot reveal anim">
+        <svg viewBox="0 0 520 300" role="img" aria-label="Workflow tracking">
+          <rect width="520" height="300" fill="#fbfcff"/><rect x="0" y="0" width="520" height="44" fill="#fff"/><line x1="0" y1="44" x2="520" y2="44" stroke="#e4e8f2"/>
+          <text x="20" y="28" font-family="Sora" font-size="13" font-weight="700" fill="#0f1b35">Workflow Tracking</text>
+          <g>
+            <rect x="20" y="60" width="150" height="226" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="34" y="82" font-family="monospace" font-size="10" fill="#7a87a3">REQUESTED</text>
+            <rect x="32" y="94" width="126" height="38" rx="7" fill="#eef1f8"/><text x="44" y="118" font-family="Inter" font-size="11" fill="#3c4a68">Cement · 50</text>
+            <rect x="32" y="140" width="126" height="38" rx="7" fill="#eef1f8"/><text x="44" y="164" font-family="Inter" font-size="11" fill="#3c4a68">Paint · 20L</text>
+            <rect x="185" y="60" width="150" height="226" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="199" y="82" font-family="monospace" font-size="10" fill="#b9810b">PENDING</text>
+            <rect x="197" y="94" width="126" height="38" rx="7" fill="#fff5e2" stroke="#f6d999"/><text x="209" y="118" font-family="Inter" font-size="11" fill="#b9810b">Tiles · 200</text>
+            <rect x="350" y="60" width="150" height="226" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="364" y="82" font-family="monospace" font-size="10" fill="#0e8a5f">APPROVED</text>
+            <rect x="362" y="94" width="126" height="38" rx="7" fill="#e9f9f1" stroke="#bfe9d6"/><text x="374" y="118" font-family="Inter" font-size="11" fill="#0e8a5f">Steel · 1t</text>
+            <rect x="362" y="140" width="126" height="38" rx="7" fill="#e9f9f1" stroke="#bfe9d6"/><text x="374" y="164" font-family="Inter" font-size="11" fill="#0e8a5f">Wire · 5</text>
+            <rect x="362" y="186" width="126" height="38" rx="7" fill="#e9f9f1" stroke="#bfe9d6"/><text x="374" y="210" font-family="Inter" font-size="11" fill="#0e8a5f">Sand · 3</text>
+          </g>
+          <circle cx="178" cy="113" r="4" fill="#3b5bff" class="loop-pulse"/><circle cx="343" cy="113" r="4" fill="#1eb980" class="loop-pulse"/>
+        </svg>
+        <div class="cap"><h3>Workflow Tracking</h3><p>Requests moving through approval stages with live status.</p></div>
+      </div>
+
+      <!-- PLANNED vs DELAYED -->
+      <div class="shot reveal anim">
+        <svg viewBox="0 0 520 300" role="img" aria-label="Planned vs delayed tasks">
+          <rect width="520" height="300" fill="#fbfcff"/><rect x="0" y="0" width="520" height="44" fill="#fff"/><line x1="0" y1="44" x2="520" y2="44" stroke="#e4e8f2"/>
+          <text x="20" y="28" font-family="Sora" font-size="13" font-weight="700" fill="#0f1b35">Planned vs Delayed Tasks</text>
+          <rect x="20" y="58" width="150" height="60" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="34" y="79" font-family="monospace" font-size="9" fill="#7a87a3">PLANNED</text><text x="34" y="105" font-family="Sora" font-size="20" font-weight="700" fill="#3b5bff" class="count" data-to="64">0</text>
+          <rect x="185" y="58" width="150" height="60" rx="10" fill="#e9f9f1" stroke="#bfe9d6"/><text x="199" y="79" font-family="monospace" font-size="9" fill="#0e8a5f">ON TIME</text><text x="199" y="105" font-family="Sora" font-size="20" font-weight="700" fill="#1eb980" class="count" data-to="51">0</text>
+          <rect x="350" y="58" width="150" height="60" rx="10" fill="#fff5e2" stroke="#f6d999"/><text x="364" y="79" font-family="monospace" font-size="9" fill="#b9810b">DELAYED</text><text x="364" y="105" font-family="Sora" font-size="20" font-weight="700" fill="#f6a609" class="count" data-to="13">0</text>
+          <rect x="20" y="132" width="480" height="148" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="34" y="154" font-family="monospace" font-size="10" fill="#7a87a3">WEEKLY — PLANNED ▮ DELAYED ▮</text>
+          <g>
+            <rect x="60" y="262" width="26" rx="3" fill="#3b5bff" class="gbar" style="--h:78px;transform:translateY(-78px)"/><rect x="90" y="262" width="26" rx="3" fill="#f6a609" class="gbar" style="--h:18px;transform:translateY(-18px)"/>
+            <rect x="150" y="262" width="26" rx="3" fill="#3b5bff" class="gbar" style="--h:64px;transform:translateY(-64px)"/><rect x="180" y="262" width="26" rx="3" fill="#f6a609" class="gbar" style="--h:30px;transform:translateY(-30px)"/>
+            <rect x="240" y="262" width="26" rx="3" fill="#3b5bff" class="gbar" style="--h:88px;transform:translateY(-88px)"/><rect x="270" y="262" width="26" rx="3" fill="#f6a609" class="gbar" style="--h:14px;transform:translateY(-14px)"/>
+            <rect x="330" y="262" width="26" rx="3" fill="#3b5bff" class="gbar" style="--h:70px;transform:translateY(-70px)"/><rect x="360" y="262" width="26" rx="3" fill="#f6a609" class="gbar" style="--h:24px;transform:translateY(-24px)"/>
+            <rect x="420" y="262" width="26" rx="3" fill="#3b5bff" class="gbar" style="--h:58px;transform:translateY(-58px)"/><rect x="450" y="262" width="26" rx="3" fill="#f6a609" class="gbar" style="--h:10px;transform:translateY(-10px)"/>
+          </g>
+        </svg>
+        <div class="cap"><h3>Planned vs Delayed Tasks</h3><p>Planned, on-time and delayed counts with weekly comparison.</p></div>
+      </div>
+
+      <!-- EMPLOYEE PERFORMANCE -->
+      <div class="shot reveal anim">
+        <svg viewBox="0 0 520 300" role="img" aria-label="Employee performance report">
+          <rect width="520" height="300" fill="#fbfcff"/><rect x="0" y="0" width="520" height="44" fill="#fff"/><line x1="0" y1="44" x2="520" y2="44" stroke="#e4e8f2"/>
+          <text x="20" y="28" font-family="Sora" font-size="13" font-weight="700" fill="#0f1b35">Employee Performance</text><text x="430" y="28" font-family="monospace" font-size="10" fill="#7a87a3">score</text>
+          <g font-family="Inter">
+            <text x="24" y="80" font-size="13" fill="#0f1b35" font-weight="600">Rajesh K.</text><rect x="150" y="70" width="310" height="13" rx="6" fill="#eef1f8"/><rect x="150" y="70" rx="6" height="13" fill="#1eb980" width="0" class="gbarw" data-w="285"/><text x="470" y="80" font-size="11" font-family="monospace" fill="#0e8a5f">92</text>
+            <text x="24" y="118" font-size="13" fill="#0f1b35" font-weight="600">Priya S.</text><rect x="150" y="108" width="310" height="13" rx="6" fill="#eef1f8"/><rect x="150" y="108" rx="6" height="13" fill="#3b5bff" width="0" class="gbarw" data-w="245"/><text x="470" y="118" font-size="11" font-family="monospace" fill="#2740c9">79</text>
+            <text x="24" y="156" font-size="13" fill="#0f1b35" font-weight="600">Amit V.</text><rect x="150" y="146" width="310" height="13" rx="6" fill="#eef1f8"/><rect x="150" y="146" rx="6" height="13" fill="#1eb980" width="0" class="gbarw" data-w="298"/><text x="470" y="156" font-size="11" font-family="monospace" fill="#0e8a5f">96</text>
+            <text x="24" y="194" font-size="13" fill="#0f1b35" font-weight="600">Neha R.</text><rect x="150" y="184" width="310" height="13" rx="6" fill="#eef1f8"/><rect x="150" y="184" rx="6" height="13" fill="#f6a609" width="0" class="gbarw" data-w="180"/><text x="470" y="194" font-size="11" font-family="monospace" fill="#b9810b">58</text>
+            <text x="24" y="232" font-size="13" fill="#0f1b35" font-weight="600">Sunil M.</text><rect x="150" y="222" width="310" height="13" rx="6" fill="#eef1f8"/><rect x="150" y="222" rx="6" height="13" fill="#3b5bff" width="0" class="gbarw" data-w="255"/><text x="470" y="232" font-size="11" font-family="monospace" fill="#2740c9">82</text>
+          </g>
+          <line x1="20" y1="252" x2="500" y2="252" stroke="#e4e8f2"/><text x="24" y="274" font-family="monospace" font-size="10" fill="#7a87a3">scored on output, quality &amp; timeliness</text>
+        </svg>
+        <div class="cap"><h3>Employee Performance Report</h3><p>Per-person score on output, quality and timeliness.</p></div>
+      </div>
+
+      <!-- PROJECT TRACKING (Gantt) -->
+      <div class="shot reveal anim">
+        <svg viewBox="0 0 520 300" role="img" aria-label="Project tracking gantt">
+          <rect width="520" height="300" fill="#fbfcff"/><rect x="0" y="0" width="520" height="44" fill="#fff"/><line x1="0" y1="44" x2="520" y2="44" stroke="#e4e8f2"/>
+          <text x="20" y="28" font-family="Sora" font-size="13" font-weight="700" fill="#0f1b35">Project Tracking</text>
+          <line x1="120" y1="56" x2="120" y2="226" stroke="#e4e8f2"/><line x1="240" y1="56" x2="240" y2="226" stroke="#e4e8f2"/><line x1="360" y1="56" x2="360" y2="226" stroke="#e4e8f2"/><line x1="480" y1="56" x2="480" y2="226" stroke="#e4e8f2"/>
+          <g font-family="Inter" font-size="11" fill="#3c4a68">
+            <text x="24" y="80">Design</text><rect x="120" y="70" rx="7" height="14" fill="#1eb980" width="0" class="gbarw" data-w="120"/>
+            <text x="24" y="112">Procurement</text><rect x="150" y="102" rx="7" height="14" fill="#3b5bff" width="0" class="gbarw" data-w="160"/>
+            <text x="24" y="144">Site Work</text><rect x="220" y="134" rx="7" height="14" fill="#3b5bff" width="0" class="gbarw" data-w="180"/>
+            <text x="24" y="176">Fit-out</text><rect x="300" y="166" rx="7" height="14" fill="#f6a609" width="0" class="gbarw" data-w="150"/>
+            <text x="24" y="208">Handover</text><rect x="410" y="198" rx="7" height="14" fill="#eef1f8" width="0" class="gbarw" data-w="70"/>
+          </g>
+          <rect x="20" y="240" width="480" height="40" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="36" y="265" font-family="Inter" font-size="12" fill="#3c4a68">Overall</text><rect x="120" y="256" width="300" height="10" rx="5" fill="#eef1f8"/><rect x="120" y="256" rx="5" height="10" fill="#1eb980" width="0" class="gbarw" data-w="195"/><text x="430" y="266" font-family="monospace" font-size="11" fill="#0e8a5f">65%</text>
+        </svg>
+        <div class="cap"><h3>Project Tracking</h3><p>Phase timeline with live completion across the project.</p></div>
+      </div>
+
+      <!-- HR EMPLOYEE DATA (wide) -->
+      <div class="shot wide reveal anim">
+        <svg viewBox="0 0 1040 300" role="img" aria-label="HR employee data management">
+          <rect width="1040" height="300" fill="#fbfcff"/><rect x="0" y="0" width="1040" height="46" fill="#fff"/><line x1="0" y1="46" x2="1040" y2="46" stroke="#e4e8f2"/>
+          <text x="24" y="29" font-family="Sora" font-size="14" font-weight="700" fill="#0f1b35">HR — Employee Data Management</text><text x="900" y="29" font-family="monospace" font-size="11" fill="#7a87a3">348 staff</text>
+          <rect x="24" y="64" width="172" height="74" rx="11" fill="#fff" stroke="#e4e8f2"/><text x="40" y="86" font-family="monospace" font-size="9" fill="#7a87a3">HEADCOUNT</text><text x="40" y="118" font-family="Sora" font-size="24" font-weight="700" fill="#3b5bff" class="count" data-to="348">0</text>
+          <rect x="208" y="64" width="172" height="74" rx="11" fill="#fff" stroke="#e4e8f2"/><text x="224" y="86" font-family="monospace" font-size="9" fill="#7a87a3">ACTIVE</text><text x="224" y="118" font-family="Sora" font-size="24" font-weight="700" fill="#1eb980" class="count" data-to="331">0</text>
+          <rect x="392" y="64" width="172" height="74" rx="11" fill="#fff" stroke="#e4e8f2"/><text x="408" y="86" font-family="monospace" font-size="9" fill="#7a87a3">ON LEAVE</text><text x="408" y="118" font-family="Sora" font-size="24" font-weight="700" fill="#f6a609" class="count" data-to="17">0</text>
+          <!-- table -->
+          <rect x="24" y="152" width="540" height="28" fill="#fff"/><g font-family="monospace" font-size="10" fill="#7a87a3"><text x="40" y="170">EMP</text><text x="150" y="170">NAME</text><text x="320" y="170">DEPT</text><text x="460" y="170">STATUS</text></g>
+          <g font-family="monospace" font-size="11" fill="#3c4a68">
+            <rect x="24" y="180" width="540" height="26" fill="#fbfcff"/><text x="40" y="197">E-001</text><text x="150" y="197">Rajesh K.</text><text x="320" y="197">Ops</text><rect x="454" y="185" width="56" height="16" rx="8" fill="#d8f5e9"/><text x="462" y="197" fill="#0e8a5f">Active</text>
+            <rect x="24" y="206" width="540" height="26" fill="#fff"/><text x="40" y="223">E-002</text><text x="150" y="223">Priya S.</text><text x="320" y="223">Sales</text><rect x="454" y="211" width="56" height="16" rx="8" fill="#d8f5e9"/><text x="462" y="223" fill="#0e8a5f">Active</text>
+            <rect x="24" y="232" width="540" height="26" fill="#fbfcff"/><text x="40" y="249">E-003</text><text x="150" y="249">Neha R.</text><text x="320" y="249">HR</text><rect x="454" y="237" width="56" height="16" rx="8" fill="#fdeccb"/><text x="462" y="249" fill="#b9810b">Leave</text>
+            <rect x="24" y="258" width="540" height="26" fill="#fff"/><text x="40" y="275">E-004</text><text x="150" y="275">Sunil M.</text><text x="320" y="275">Store</text><rect x="454" y="263" width="56" height="16" rx="8" fill="#d8f5e9"/><text x="462" y="275" fill="#0e8a5f">Active</text>
+          </g>
+          <!-- dept donut -->
+          <rect x="588" y="64" width="428" height="220" rx="11" fill="#fff" stroke="#e4e8f2"/><text x="606" y="88" font-family="monospace" font-size="10" fill="#7a87a3">BY DEPARTMENT</text>
+          <circle cx="680" cy="180" r="56" fill="none" stroke="#eef1f8" stroke-width="28"/>
+          <circle cx="680" cy="180" r="56" fill="none" stroke="#3b5bff" stroke-width="28" stroke-dasharray="0 352" class="dring" data-dash="120 232" transform="rotate(-90 680 180)"/>
+          <circle cx="680" cy="180" r="56" fill="none" stroke="#1eb980" stroke-width="28" stroke-dasharray="0 352" class="dring" data-dash="90 262" data-offset="-120" transform="rotate(-90 680 180)"/>
+          <g font-family="Inter" font-size="13" fill="#3c4a68"><rect x="770" y="140" width="13" height="13" rx="3" fill="#3b5bff"/><text x="792" y="151">Operations 34%</text><rect x="770" y="168" width="13" height="13" rx="3" fill="#1eb980"/><text x="792" y="179">Sales 26%</text><rect x="770" y="196" width="13" height="13" rx="3" fill="#eef1f8"/><text x="792" y="207">Other 40%</text></g>
+        </svg>
+        <div class="cap"><h3>HR — Employee Data Management</h3><p>Central employee store: headcount, status, department split and records.</p></div>
+      </div>
+
+      <!-- SALES -->
+      <div class="shot reveal anim">
+        <svg viewBox="0 0 520 300" role="img" aria-label="Sales report">
+          <rect width="520" height="300" fill="#fbfcff"/><rect x="0" y="0" width="520" height="44" fill="#fff"/><line x1="0" y1="44" x2="520" y2="44" stroke="#e4e8f2"/>
+          <text x="20" y="28" font-family="Sora" font-size="13" font-weight="700" fill="#0f1b35">Sales Report</text><text x="430" y="28" font-family="monospace" font-size="10" fill="#7a87a3">Q2 2026</text>
+          <rect x="20" y="60" width="150" height="66" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="34" y="82" font-family="monospace" font-size="9" fill="#7a87a3">REVENUE</text><text x="34" y="110" font-family="Sora" font-size="22" font-weight="700" fill="#3b5bff">₹48.2L</text>
+          <rect x="185" y="60" width="150" height="66" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="199" y="82" font-family="monospace" font-size="9" fill="#7a87a3">DEALS</text><text x="199" y="110" font-family="Sora" font-size="22" font-weight="700" fill="#0f1b35" class="count" data-to="126">0</text>
+          <rect x="350" y="60" width="150" height="66" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="364" y="82" font-family="monospace" font-size="9" fill="#7a87a3">CONV.</text><text x="364" y="110" font-family="Sora" font-size="22" font-weight="700" fill="#1eb980" class="count" data-to="31" data-suffix="%">0%</text>
+          <rect x="20" y="140" width="480" height="140" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="34" y="162" font-family="monospace" font-size="10" fill="#7a87a3">MONTHLY TREND</text>
+          <polyline points="50,250 120,236 190,240 260,210 330,216 400,180 470,160" fill="none" stroke="#3b5bff" stroke-width="3" class="dline"/>
+          <g fill="#3b5bff"><circle cx="400" cy="180" r="3.5"/><circle cx="470" cy="160" r="3.5"/></g>
+        </svg>
+        <div class="cap"><h3>Sales Report</h3><p>Revenue, deals &amp; conversion with monthly trend.</p></div>
+      </div>
+
+      <!-- ATTENDANCE -->
+      <div class="shot reveal anim">
+        <svg viewBox="0 0 520 300" role="img" aria-label="Attendance report">
+          <rect width="520" height="300" fill="#fbfcff"/><rect x="0" y="0" width="520" height="44" fill="#fff"/><line x1="0" y1="44" x2="520" y2="44" stroke="#e4e8f2"/>
+          <text x="20" y="28" font-family="Sora" font-size="13" font-weight="700" fill="#0f1b35">Attendance Report</text>
+          <rect x="20" y="60" width="150" height="62" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="34" y="82" font-family="monospace" font-size="9" fill="#7a87a3">PRESENT</text><text x="34" y="108" font-family="Sora" font-size="22" font-weight="700" fill="#1eb980" class="count" data-to="142">0</text>
+          <rect x="185" y="60" width="150" height="62" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="199" y="82" font-family="monospace" font-size="9" fill="#7a87a3">ABSENT</text><text x="199" y="108" font-family="Sora" font-size="22" font-weight="700" fill="#0f1b35" class="count" data-to="8">0</text>
+          <rect x="350" y="60" width="150" height="62" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="364" y="82" font-family="monospace" font-size="9" fill="#7a87a3">LEAVE</text><text x="364" y="108" font-family="Sora" font-size="22" font-weight="700" fill="#f6a609" class="count" data-to="5">0</text>
+          <rect x="20" y="136" width="320" height="144" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="34" y="158" font-family="monospace" font-size="10" fill="#7a87a3">WEEKLY</text>
+          <g>
+            <rect x="44" y="264" width="36" rx="3" fill="#3b5bff" class="gbar" style="--h:54px;transform:translateY(-54px)"/>
+            <rect x="98" y="264" width="36" rx="3" fill="#3b5bff" class="gbar" style="--h:68px;transform:translateY(-68px)"/>
+            <rect x="152" y="264" width="36" rx="3" fill="#3b5bff" class="gbar" style="--h:44px;transform:translateY(-44px)"/>
+            <rect x="206" y="264" width="36" rx="3" fill="#3b5bff" class="gbar" style="--h:72px;transform:translateY(-72px)"/>
+            <rect x="260" y="264" width="36" rx="3" fill="#3b5bff" class="gbar" style="--h:58px;transform:translateY(-58px)"/>
+          </g>
+          <rect x="352" y="136" width="148" height="144" rx="10" fill="#fff" stroke="#e4e8f2"/>
+          <circle cx="426" cy="208" r="46" fill="none" stroke="#eef1f8" stroke-width="14"/><circle cx="426" cy="208" r="46" fill="none" stroke="#1eb980" stroke-width="14" stroke-dasharray="0 289" class="dring" data-dash="245 289" data-offset="-30" transform="rotate(-90 426 208)"/><text x="426" y="214" font-family="Sora" font-size="18" font-weight="700" fill="#0f1b35" text-anchor="middle">94%</text>
+        </svg>
+        <div class="cap"><h3>Attendance Report</h3><p>Present / absent / leave with weekly trend and monthly %.</p></div>
+      </div>
+
+      <!-- INVENTORY -->
+      <div class="shot reveal anim">
+        <svg viewBox="0 0 520 300" role="img" aria-label="Inventory report">
+          <rect width="520" height="300" fill="#fbfcff"/><rect x="0" y="0" width="520" height="44" fill="#fff"/><line x1="0" y1="44" x2="520" y2="44" stroke="#e4e8f2"/>
+          <text x="20" y="28" font-family="Sora" font-size="13" font-weight="700" fill="#0f1b35">Inventory / Stock Report</text>
+          <rect x="20" y="58" width="150" height="58" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="34" y="79" font-family="monospace" font-size="9" fill="#7a87a3">VALUE</text><text x="34" y="104" font-family="Sora" font-size="19" font-weight="700" fill="#3b5bff">₹12.4L</text>
+          <rect x="185" y="58" width="150" height="58" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="199" y="79" font-family="monospace" font-size="9" fill="#7a87a3">SKUs</text><text x="199" y="104" font-family="Sora" font-size="19" font-weight="700" fill="#0f1b35" class="count" data-to="348">0</text>
+          <rect x="350" y="58" width="150" height="58" rx="10" fill="#fff5e2" stroke="#f6d999"/><text x="364" y="79" font-family="monospace" font-size="9" fill="#b9810b">LOW STOCK</text><text x="364" y="104" font-family="Sora" font-size="19" font-weight="700" fill="#f6a609" class="count" data-to="7">0</text>
+          <rect x="20" y="128" width="480" height="28" fill="#fff"/><g font-family="monospace" font-size="10" fill="#7a87a3"><text x="34" y="146">ITEM</text><text x="250" y="146">IN</text><text x="330" y="146">OUT</text><text x="430" y="146">LEFT</text></g>
+          <g font-family="monospace" font-size="11" fill="#3c4a68">
+            <rect x="20" y="156" width="480" height="28" fill="#fbfcff"/><text x="34" y="174">Cement</text><text x="250" y="174">500</text><text x="330" y="174">470</text><rect x="424" y="161" width="40" height="16" rx="8" fill="#d8f5e9"/><text x="432" y="174" fill="#0e8a5f">30</text>
+            <rect x="20" y="184" width="480" height="28" fill="#fff"/><text x="34" y="202">Paint</text><text x="250" y="202">120</text><text x="330" y="202">116</text><rect x="424" y="189" width="40" height="16" rx="8" fill="#fdeccb"/><text x="436" y="202" fill="#b9810b">4</text>
+            <rect x="20" y="212" width="480" height="28" fill="#fbfcff"/><text x="34" y="230">Tiles</text><text x="250" y="230">900</text><text x="330" y="230">640</text><rect x="424" y="217" width="46" height="16" rx="8" fill="#d8f5e9"/><text x="432" y="230" fill="#0e8a5f">260</text>
+            <rect x="20" y="240" width="480" height="28" fill="#fff"/><text x="34" y="258">Wire</text><text x="250" y="258">80</text><text x="330" y="258">77</text><rect x="424" y="245" width="40" height="16" rx="8" fill="#fdeccb"/><text x="436" y="258" fill="#b9810b">3</text>
+          </g>
+        </svg>
+        <div class="cap"><h3>Inventory / Stock Report</h3><p>Live in/out, valuation and low-stock alerts.</p></div>
+      </div>
+
+      <!-- DELEGATION -->
+      <div class="shot reveal anim">
+        <svg viewBox="0 0 520 300" role="img" aria-label="Delegation report">
+          <rect width="520" height="300" fill="#fbfcff"/><rect x="0" y="0" width="520" height="44" fill="#fff"/><line x1="0" y1="44" x2="520" y2="44" stroke="#e4e8f2"/>
+          <text x="20" y="28" font-family="Sora" font-size="13" font-weight="700" fill="#0f1b35">Delegation Report</text><text x="420" y="28" font-family="monospace" font-size="10" fill="#7a87a3">per person</text>
+          <g font-family="Inter">
+            <text x="24" y="84" font-size="13" fill="#0f1b35" font-weight="600">Rajesh K.</text><rect x="160" y="74" width="300" height="12" rx="6" fill="#eef1f8"/><rect x="160" y="74" rx="6" height="12" fill="#1eb980" width="0" class="gbarw" data-w="270"/><text x="470" y="84" font-size="11" font-family="monospace" fill="#0e8a5f">90%</text>
+            <text x="24" y="124" font-size="13" fill="#0f1b35" font-weight="600">Priya S.</text><rect x="160" y="114" width="300" height="12" rx="6" fill="#eef1f8"/><rect x="160" y="114" rx="6" height="12" fill="#3b5bff" width="0" class="gbarw" data-w="225"/><text x="470" y="124" font-size="11" font-family="monospace" fill="#2740c9">75%</text>
+            <text x="24" y="164" font-size="13" fill="#0f1b35" font-weight="600">Amit V.</text><rect x="160" y="154" width="300" height="12" rx="6" fill="#eef1f8"/><rect x="160" y="154" rx="6" height="12" fill="#1eb980" width="0" class="gbarw" data-w="300"/><text x="470" y="164" font-size="11" font-family="monospace" fill="#0e8a5f">100%</text>
+            <text x="24" y="204" font-size="13" fill="#0f1b35" font-weight="600">Neha R.</text><rect x="160" y="194" width="300" height="12" rx="6" fill="#eef1f8"/><rect x="160" y="194" rx="6" height="12" fill="#f6a609" width="0" class="gbarw" data-w="174"/><text x="470" y="204" font-size="11" font-family="monospace" fill="#b9810b">58%</text>
+            <text x="24" y="244" font-size="13" fill="#0f1b35" font-weight="600">Sunil M.</text><rect x="160" y="234" width="300" height="12" rx="6" fill="#eef1f8"/><rect x="160" y="234" rx="6" height="12" fill="#3b5bff" width="0" class="gbarw" data-w="246"/><text x="470" y="244" font-size="11" font-family="monospace" fill="#2740c9">82%</text>
+          </g>
+          <line x1="20" y1="262" x2="500" y2="262" stroke="#e4e8f2"/><text x="24" y="284" font-family="monospace" font-size="10" fill="#7a87a3">auto-emailed every Monday · PDF per person</text>
+        </svg>
+        <div class="cap"><h3>Delegation Report</h3><p>Per-person task completion — generated and emailed weekly.</p></div>
+      </div>
+
+      <!-- EMAIL AUTOMATION -->
+      <div class="shot reveal anim">
+        <svg viewBox="0 0 520 300" role="img" aria-label="Email automation log">
+          <rect width="520" height="300" fill="#fbfcff"/><rect x="0" y="0" width="520" height="44" fill="#fff"/><line x1="0" y1="44" x2="520" y2="44" stroke="#e4e8f2"/>
+          <text x="20" y="28" font-family="Sora" font-size="13" font-weight="700" fill="#0f1b35">Email Automation</text><text x="445" y="28" font-family="monospace" font-size="11" fill="#1eb980" class="loop-pulse">● on</text>
+          <rect x="20" y="58" width="150" height="58" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="34" y="79" font-family="monospace" font-size="9" fill="#7a87a3">SENT TODAY</text><text x="34" y="104" font-family="Sora" font-size="19" font-weight="700" fill="#3b5bff" class="count" data-to="214">0</text>
+          <rect x="185" y="58" width="150" height="58" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="199" y="79" font-family="monospace" font-size="9" fill="#7a87a3">DELIVERED</text><text x="199" y="104" font-family="Sora" font-size="19" font-weight="700" fill="#1eb980">99.5%</text>
+          <rect x="350" y="58" width="150" height="58" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="364" y="79" font-family="monospace" font-size="9" fill="#7a87a3">SCHEDULES</text><text x="364" y="104" font-family="Sora" font-size="19" font-weight="700" fill="#0f1b35" class="count" data-to="9">0</text>
+          <rect x="20" y="128" width="480" height="152" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="36" y="150" font-family="monospace" font-size="10" fill="#7a87a3">DELIVERY LOG</text>
+          <g font-family="monospace" font-size="11">
+            <text x="36" y="176" fill="#1eb980">✓</text><text x="56" y="176" fill="#3c4a68">reimbursement_June.pdf → 14 staff</text><text x="430" y="176" fill="#7a87a3">09:00</text>
+            <text x="36" y="202" fill="#1eb980">✓</text><text x="56" y="202" fill="#3c4a68">weekly_delegation.pdf → 6 leads</text><text x="430" y="202" fill="#7a87a3">Mon</text>
+            <text x="36" y="228" fill="#1eb980">✓</text><text x="56" y="228" fill="#3c4a68">low_stock_alert → store team</text><text x="430" y="228" fill="#7a87a3">11:24</text>
+            <text x="36" y="254" fill="#1eb980">✓</text><text x="56" y="254" fill="#3c4a68">approval_request → manager</text><text x="430" y="254" fill="#7a87a3">13:02</text>
+          </g>
+        </svg>
+        <div class="cap"><h3>Email Automation</h3><p>Scheduled &amp; triggered sends with a full delivery log.</p></div>
+      </div>
+
+      <!-- EXPENSE -->
+      <div class="shot reveal anim">
+        <svg viewBox="0 0 520 300" role="img" aria-label="Expense report">
+          <rect width="520" height="300" fill="#fbfcff"/><rect x="0" y="0" width="520" height="44" fill="#fff"/><line x1="0" y1="44" x2="520" y2="44" stroke="#e4e8f2"/>
+          <text x="20" y="28" font-family="Sora" font-size="13" font-weight="700" fill="#0f1b35">Expense &amp; Reimbursement</text>
+          <rect x="20" y="60" width="230" height="120" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="36" y="82" font-family="monospace" font-size="10" fill="#7a87a3">BY CATEGORY</text>
+          <circle cx="100" cy="130" r="42" fill="none" stroke="#3b5bff" stroke-width="22"/><circle cx="100" cy="130" r="42" fill="none" stroke="#1eb980" stroke-width="22" stroke-dasharray="0 264" class="dring" data-dash="120 144" transform="rotate(-90 100 130)"/><circle cx="100" cy="130" r="42" fill="none" stroke="#f6a609" stroke-width="22" stroke-dasharray="0 264" class="dring" data-dash="60 204" data-offset="-120" transform="rotate(-90 100 130)"/>
+          <g font-family="Inter" font-size="11" fill="#3c4a68"><rect x="160" y="108" width="11" height="11" rx="3" fill="#3b5bff"/><text x="178" y="118">Travel</text><rect x="160" y="128" width="11" height="11" rx="3" fill="#1eb980"/><text x="178" y="138">Material</text><rect x="160" y="148" width="11" height="11" rx="3" fill="#f6a609"/><text x="178" y="158">Misc</text></g>
+          <rect x="262" y="60" width="238" height="120" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="278" y="82" font-family="monospace" font-size="10" fill="#7a87a3">THIS MONTH</text><text x="278" y="120" font-family="Sora" font-size="28" font-weight="700" fill="#3b5bff">₹2.18L</text><text x="278" y="146" font-family="Inter" font-size="12" fill="#1eb980">▲ 12 approved</text><text x="278" y="166" font-family="Inter" font-size="12" fill="#f6a609">◷ 3 pending</text>
+          <rect x="20" y="192" width="480" height="28" fill="#fff"/><g font-family="monospace" font-size="10" fill="#7a87a3"><text x="34" y="210">STAFF</text><text x="240" y="210">AMOUNT</text><text x="400" y="210">STATUS</text></g>
+          <g font-family="monospace" font-size="11" fill="#3c4a68">
+            <rect x="20" y="220" width="480" height="26" fill="#fbfcff"/><text x="34" y="237">Rajesh K.</text><text x="240" y="237">₹ 4,200</text><rect x="394" y="225" width="64" height="16" rx="8" fill="#d8f5e9"/><text x="402" y="237" fill="#0e8a5f">Approved</text>
+            <rect x="20" y="246" width="480" height="26" fill="#fff"/><text x="34" y="263">Priya S.</text><text x="240" y="263">₹ 1,850</text><rect x="394" y="251" width="56" height="16" rx="8" fill="#fdeccb"/><text x="402" y="263" fill="#b9810b">Pending</text>
+          </g>
+        </svg>
+        <div class="cap"><h3>Expense &amp; Reimbursement</h3><p>Category split, monthly spend and per-staff claim status.</p></div>
+      </div>
+
+      <!-- VISIT TRACKING -->
+      <div class="shot reveal anim">
+        <svg viewBox="0 0 520 300" role="img" aria-label="Visit tracking report">
+          <rect width="520" height="300" fill="#fbfcff"/><rect x="0" y="0" width="520" height="44" fill="#fff"/><line x1="0" y1="44" x2="520" y2="44" stroke="#e4e8f2"/>
+          <text x="20" y="28" font-family="Sora" font-size="13" font-weight="700" fill="#0f1b35">Visit / Field Tracking</text>
+          <rect x="20" y="60" width="290" height="220" rx="10" fill="#fff" stroke="#e4e8f2"/>
+          <path d="M40 110 H300 M40 160 H300 M40 210 H300 M110 70 V270 M200 70 V270" stroke="#eef1f8" stroke-width="1"/>
+          <path d="M90 130 L170 190 L240 120 L260 230" stroke="#3b5bff" stroke-width="2" fill="none" stroke-dasharray="4 4" class="dline"/>
+          <circle cx="90" cy="130" r="6" fill="#3b5bff"/><circle cx="170" cy="190" r="6" fill="#3b5bff"/><circle cx="240" cy="120" r="6" fill="#1eb980"/><circle cx="260" cy="230" r="6" fill="#f6a609" class="loop-pulse"/>
+          <rect x="324" y="60" width="176" height="50" rx="9" fill="#fff" stroke="#e4e8f2"/><text x="338" y="82" font-family="Inter" font-size="11" fill="#0f1b35">Client A · 10:12</text><text x="338" y="99" font-family="monospace" font-size="9" fill="#1eb980">✓ done</text>
+          <rect x="324" y="118" width="176" height="50" rx="9" fill="#fff" stroke="#e4e8f2"/><text x="338" y="140" font-family="Inter" font-size="11" fill="#0f1b35">Client B · 11:40</text><text x="338" y="157" font-family="monospace" font-size="9" fill="#1eb980">✓ done</text>
+          <rect x="324" y="176" width="176" height="50" rx="9" fill="#fff" stroke="#e4e8f2"/><text x="338" y="198" font-family="Inter" font-size="11" fill="#0f1b35">Client C · 13:05</text><text x="338" y="215" font-family="monospace" font-size="9" fill="#f6a609">◷ en route</text>
+          <rect x="324" y="234" width="176" height="46" rx="9" fill="#eaeeff"/><text x="338" y="254" font-family="monospace" font-size="9" fill="#7a87a3">TODAY</text><text x="338" y="272" font-family="Sora" font-size="14" font-weight="700" fill="#3b5bff">12 visits</text>
+        </svg>
+        <div class="cap"><h3>Visit / Field Tracking</h3><p>Route map plus check-in log with status per client.</p></div>
+      </div>
+
+      <!-- TASK & CHECKLIST -->
+      <div class="shot reveal anim">
+        <svg viewBox="0 0 520 300" role="img" aria-label="Task and checklist status">
+          <rect width="520" height="300" fill="#fbfcff"/><rect x="0" y="0" width="520" height="44" fill="#fff"/><line x1="0" y1="44" x2="520" y2="44" stroke="#e4e8f2"/>
+          <text x="20" y="28" font-family="Sora" font-size="13" font-weight="700" fill="#0f1b35">Task &amp; Checklist Status</text>
+          <rect x="20" y="60" width="230" height="220" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="36" y="82" font-family="monospace" font-size="10" fill="#7a87a3">TODAY'S CHECKLIST</text>
+          <g font-family="Inter" font-size="12" fill="#3c4a68">
+            <rect x="36" y="98" width="16" height="16" rx="4" fill="#1eb980"/><path d="M40 106 l3 3 l6 -6" stroke="#fff" stroke-width="2" fill="none"/><text x="62" y="111">Update MIS sheet</text>
+            <rect x="36" y="126" width="16" height="16" rx="4" fill="#1eb980"/><path d="M40 134 l3 3 l6 -6" stroke="#fff" stroke-width="2" fill="none"/><text x="62" y="139">Send daily report</text>
+            <rect x="36" y="154" width="16" height="16" rx="4" fill="#1eb980"/><path d="M40 162 l3 3 l6 -6" stroke="#fff" stroke-width="2" fill="none"/><text x="62" y="167">Stock reconciliation</text>
+            <rect x="36" y="182" width="16" height="16" rx="4" fill="#fff" stroke="#c9d0e6"/><text x="62" y="195">Approve claims</text>
+            <rect x="36" y="210" width="16" height="16" rx="4" fill="#fff" stroke="#c9d0e6"/><text x="62" y="223">Vendor follow-up</text>
+          </g>
+          <rect x="262" y="60" width="238" height="106" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="278" y="82" font-family="monospace" font-size="10" fill="#7a87a3">COMPLETION</text>
+          <circle cx="330" cy="120" r="34" fill="none" stroke="#eef1f8" stroke-width="11"/><circle cx="330" cy="120" r="34" fill="none" stroke="#1eb980" stroke-width="11" stroke-dasharray="0 214" class="dring" data-dash="128 86" transform="rotate(-90 330 120)"/><text x="330" y="125" font-family="Sora" font-size="15" font-weight="700" fill="#0f1b35" text-anchor="middle">60%</text>
+          <text x="386" y="116" font-family="Sora" font-size="13" fill="#3c4a68">3 of 5</text><text x="386" y="134" font-family="Inter" font-size="11" fill="#7a87a3">done</text>
+          <rect x="262" y="178" width="238" height="102" rx="10" fill="#fff" stroke="#e4e8f2"/><text x="278" y="200" font-family="monospace" font-size="10" fill="#7a87a3">REMINDERS</text>
+          <text x="278" y="226" font-family="Inter" font-size="12" fill="#f6a609">◷ 2 due in 1 hour</text><text x="278" y="250" font-family="Inter" font-size="12" fill="#3b5bff">↻ auto-reminder set</text><text x="278" y="272" font-family="Inter" font-size="12" fill="#1eb980">✓ 3 cleared today</text>
+        </svg>
+        <div class="cap"><h3>Task &amp; Checklist Status</h3><p>Daily checklist, completion ring and reminder tracking.</p></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="systems" class="alt">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="sec-num">02</span><h2 class="sec-title">Systems behind the reports</h2></div>
+    <p class="sec-sub reveal">The apps that capture and automate the data — each built and handed to a live team.</p>
+    <div class="grid">
+      <article class="card reveal"><span class="delivered">✓ live</span><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><h3>Login &amp; Access</h3><p>Role-based login controlling who sees which app, sheet and report.</p></article>
+      <article class="card reveal"><span class="delivered">✓ live</span><div class="ico"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg></div><h3>Email Automation</h3><p>Scheduled &amp; triggered emails with PDF attachments, zero manual sending.</p></article>
+      <article class="card reveal"><span class="delivered">✓ live</span><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-6"/></svg></div><h3>Workflow Management</h3><p>Form-to-sheet pipeline with multi-step approvals and live status.</p></article>
+      <article class="card reveal"><span class="delivered">✓ live</span><div class="ico"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="m16 11 2 2 4-4"/></svg></div><h3>Delegation System</h3><p>Weekly per-person delegation report PDFs, auto-generated and emailed.</p></article>
+      <article class="card reveal"><span class="delivered">✓ live</span><div class="ico"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><h3>Reminder &amp; Checklist</h3><p>Recurring task checklists with automatic reminders so nothing slips.</p></article>
+      <article class="card reveal"><span class="delivered">✓ live</span><div class="ico"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></div><h3>Inventory Management</h3><p>Stock in/out tracking with low-stock alerts and live valuation.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="sec-num">03</span><h2 class="sec-title">Toolkit</h2></div>
+    <div class="skills">
+      <div class="skill reveal sk"><div class="name">Google Forms <span>90%</span></div><div class="barwrap"><i data-w="90"></i></div></div>
+      <div class="skill reveal sk"><div class="name">Google Sheets <span>95%</span></div><div class="barwrap"><i data-w="95"></i></div></div>
+      <div class="skill reveal sk"><div class="name">AppSheet <span>90%</span></div><div class="barwrap"><i data-w="90"></i></div></div>
+      <div class="skill reveal sk"><div class="name">Apps Script <span>90%</span></div><div class="barwrap"><i data-w="90"></i></div></div>
+      <div class="skill reveal sk"><div class="name">Email Automation <span>90%</span></div><div class="barwrap"><i data-w="90"></i></div></div>
+      <div class="skill reveal sk"><div class="name">Advanced Excel <span>95%</span></div><div class="barwrap"><i data-w="95"></i></div></div>
+      <div class="skill reveal sk"><div class="name">Looker Studio <span>85%</span></div><div class="barwrap"><i data-w="85"></i></div></div>
+      <div class="skill reveal sk"><div class="name">PowerPoint <span>85%</span></div><div class="barwrap"><i data-w="85"></i></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="experience" class="alt">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="sec-num">04</span><h2 class="sec-title">Experience</h2></div>
+    <div class="xp">
+      <div class="xp-row reveal"><div class="xp-when">Oct 2025 — Present</div><div><div class="xp-role">MIS Executive</div><div class="xp-co">Kayysr Homes Pvt Ltd · Ghitorni, New Delhi</div></div></div>
+      <div class="xp-row reveal"><div class="xp-when">Apr 2023 — Sep 2025</div><div><div class="xp-role">MIS Executive</div><div class="xp-co">SoftAge Information Technology Pvt Ltd · Gurgaon</div></div></div>
+      <div class="xp-row reveal"><div class="xp-when">Feb 2021 — Mar 2023</div><div><div class="xp-role">MIS Executive</div><div class="xp-co">Paddlepoint BPO Services Pvt Ltd · Mumbai</div></div></div>
+      <div class="xp-row reveal"><div class="xp-when">2020 — 2021</div><div><div class="xp-role">Backend Operator</div><div class="xp-co">Little Kangaroo Pvt Ltd · Mumbai</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap reveal">
+    <h2>Let's build something.</h2>
+    <p>Open to MIS, automation and Apps Script work. The fastest way to reach me is a call or WhatsApp.</p>
+    <div class="actions">
+      <a class="btn btn-call" href="tel:+919044315939"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>+91 90443 15939</a>
+      <a class="btn btn-wa" href="https://wa.me/919044315939?text=Hi%20Amit%2C%20I%20saw%20your%20portfolio" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 0 1 8.413 3.488 11.82 11.82 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.607zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>WhatsApp me</a>
+      <a class="btn btn-mail" href="mailto:amitsharmabksc@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>amitsharmabksc@gmail.com</a>
+    </div>
+  </div>
+</section>
+
+<footer>Amit Sharma · MIS &amp; Google Apps Script Developer · New Delhi</footer>
+
+<script>
+  // generic reveal
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // skill bars
+  const sb=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.querySelectorAll('i[data-w]').forEach(i=>i.style.width=i.dataset.w+'%');sb.unobserve(e.target)}})},{threshold:.5});
+  document.querySelectorAll('.sk').forEach(el=>sb.observe(el));
+
+  // dashboard animations: play once on scroll
+  const reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  function playCard(card){
+    card.classList.add('play');
+    // horizontal bars (width)
+    card.querySelectorAll('.gbarw').forEach(b=>{b.setAttribute('width','0');requestAnimationFrame(()=>{b.style.transition='width 1s cubic-bezier(.2,.7,.2,1)';b.setAttribute('width',b.dataset.w)})});
+    // donut rings
+    card.querySelectorAll('.dring').forEach(r=>{const d=r.dataset.dash;const o=r.dataset.offset;requestAnimationFrame(()=>{r.style.transition='stroke-dasharray 1.2s ease';r.setAttribute('stroke-dasharray',d);if(o)r.setAttribute('stroke-dashoffset',o)})});
+    // count up
+    card.querySelectorAll('.count').forEach(t=>{const to=+t.dataset.to;const suf=t.dataset.suffix||'';if(reduce){t.textContent=to+suf;return}let s=null;const dur=900;function step(ts){if(!s)s=ts;const p=Math.min((ts-s)/dur,1);t.textContent=Math.round(p*to)+suf;if(p<1)requestAnimationFrame(step)}requestAnimationFrame(step)});
+  }
+  const da=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){playCard(e.target);da.unobserve(e.target)}})},{threshold:.3});
+  document.querySelectorAll('.anim').forEach(el=>da.observe(el));
+</script>
+</body>
+</html>
