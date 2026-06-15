@@ -126,6 +126,8 @@
   @keyframes flow{0%{offset-distance:0%;opacity:0}10%{opacity:1}90%{opacity:1}100%{offset-distance:100%;opacity:0}}
   .flow{offset-path:path('M60 132 L150 132 L240 132');animation:flow 3s linear infinite}
   .flow.d{animation-delay:1.5s}
+  @keyframes fmsflow{0%{offset-distance:0%}100%{offset-distance:100%}}
+  .fmsflow{offset-path:path('M118 96 H922');animation:fmsflow 4s linear infinite}
   /* on-scroll: grow bars & draw lines (toggled by JS adding .play) */
   .gbar{height:0;transition:height 1s cubic-bezier(.2,.7,.2,1)}
   .play .gbar{height:var(--h)}
@@ -232,6 +234,48 @@
           <g font-family="Inter" font-size="13" fill="#3c4a68"><rect x="820" y="140" width="13" height="13" rx="3" fill="#1eb980"/><text x="842" y="151">Completed 68%</text><rect x="820" y="168" width="13" height="13" rx="3" fill="#f6a609"/><text x="842" y="179">In progress 21%</text><rect x="820" y="196" width="13" height="13" rx="3" fill="#cdd7ff"/><text x="842" y="207">Pending 11%</text></g>
         </svg>
         <div class="cap"><h3>MIS Summary Report</h3><p>Daily / weekly / monthly rollup — output, delays and status for management.</p></div>
+      </div>
+
+      <!-- FMS FLOW / MONITORING (wide) -->
+      <div class="shot wide reveal anim">
+        <svg viewBox="0 0 1040 340" role="img" aria-label="FMS flow monitoring with steps, TAT, planned and actual dates and delay">
+          <rect width="1040" height="340" fill="#fbfcff"/><rect x="0" y="0" width="1040" height="46" fill="#fff"/><line x1="0" y1="46" x2="1040" y2="46" stroke="#e4e8f2"/>
+          <circle cx="28" cy="24" r="7" fill="#3b5bff" class="loop-pulse"/><text x="46" y="29" font-family="Sora" font-size="14" font-weight="700" fill="#0f1b35">FMS Flow — Monitoring System</text><text x="880" y="29" font-family="monospace" font-size="11" fill="#7a87a3">Functional Mgmt System</text>
+
+          <!-- FLOWCHART ROW -->
+          <g>
+            <!-- connecting line -->
+            <path d="M118 96 H922" fill="none" stroke="#e4e8f2" stroke-width="3"/>
+            <path d="M118 96 H922" fill="none" stroke="#3b5bff" stroke-width="3" stroke-dasharray="6 10" class="loop-pulse"/>
+            <!-- step nodes -->
+            <g font-family="Inter" font-size="11" font-weight="600" text-anchor="middle">
+              <circle cx="118" cy="96" r="22" fill="#e9f9f1" stroke="#1eb980"/><text x="118" y="100" fill="#0e8a5f">1</text><text x="118" y="138" fill="#3c4a68">Request</text>
+              <circle cx="319" cy="96" r="22" fill="#e9f9f1" stroke="#1eb980"/><text x="319" y="100" fill="#0e8a5f">2</text><text x="319" y="138" fill="#3c4a68">Review</text>
+              <circle cx="520" cy="96" r="22" fill="#eaeeff" stroke="#3b5bff"/><text x="520" y="100" fill="#2740c9">3</text><text x="520" y="138" fill="#3c4a68">Approval</text>
+              <circle cx="721" cy="96" r="22" fill="#fff5e2" stroke="#f6a609"/><text x="721" y="100" fill="#b9810b">4</text><text x="721" y="138" fill="#3c4a68">Execution</text>
+              <circle cx="922" cy="96" r="22" fill="#eef1f8" stroke="#c9d0e6"/><text x="922" y="100" fill="#56627e">5</text><text x="922" y="138" fill="#3c4a68">Closure</text>
+            </g>
+            <!-- arrowheads -->
+            <g fill="#3b5bff"><polygon points="290,92 290,100 298,96"/><polygon points="491,92 491,100 499,96"/><polygon points="692,92 692,100 700,96"/><polygon points="893,92 893,100 901,96"/></g>
+            <!-- moving packet along flow -->
+            <g class="fmsflow"><rect x="-6" y="-6" width="12" height="12" rx="3" fill="#3b5bff"/></g>
+          </g>
+
+          <!-- TABLE: Step / TAT / Planned / Actual / Delay -->
+          <rect x="24" y="164" width="992" height="156" rx="12" fill="#fff" stroke="#e4e8f2"/>
+          <g font-family="monospace" font-size="11" fill="#7a87a3"><text x="44" y="188">STEP</text><text x="300" y="188">TAT</text><text x="430" y="188">PLANNED</text><text x="610" y="188">ACTUAL</text><text x="800" y="188">DELAY</text></g>
+          <line x1="24" y1="198" x2="1016" y2="198" stroke="#eef1f8"/>
+          <g font-family="Inter" font-size="12.5" fill="#3c4a68">
+            <text x="44" y="222">1 · Request</text><text x="300" y="222" font-family="monospace">1 day</text><text x="430" y="222" font-family="monospace">10 Jun</text><text x="610" y="222" font-family="monospace">10 Jun</text><rect x="794" y="210" width="70" height="18" rx="9" fill="#d8f5e9"/><text x="806" y="222" fill="#0e8a5f" font-size="11" font-family="monospace">On time</text>
+            <line x1="24" y1="234" x2="1016" y2="234" stroke="#f4f6fb"/>
+            <text x="44" y="256">2 · Review</text><text x="300" y="256" font-family="monospace">2 days</text><text x="430" y="256" font-family="monospace">12 Jun</text><text x="610" y="256" font-family="monospace">13 Jun</text><rect x="794" y="244" width="74" height="18" rx="9" fill="#fdeccb"/><text x="806" y="256" fill="#b9810b" font-size="11" font-family="monospace">+1 day</text>
+            <line x1="24" y1="268" x2="1016" y2="268" stroke="#f4f6fb"/>
+            <text x="44" y="290">3 · Approval</text><text x="300" y="290" font-family="monospace">1 day</text><text x="430" y="290" font-family="monospace">14 Jun</text><text x="610" y="290" font-family="monospace">14 Jun</text><rect x="794" y="278" width="70" height="18" rx="9" fill="#d8f5e9"/><text x="806" y="290" fill="#0e8a5f" font-size="11" font-family="monospace">On time</text>
+            <line x1="24" y1="302" x2="1016" y2="302" stroke="#f4f6fb"/>
+            <text x="44" y="318" fill="#56627e">4 · Execution</text><text x="300" y="318" font-family="monospace" fill="#56627e">3 days</text><text x="430" y="318" font-family="monospace" fill="#56627e">17 Jun</text><text x="610" y="318" font-family="monospace" fill="#56627e">— running</text><rect x="794" y="306" width="86" height="18" rx="9" fill="#eaeeff"/><text x="806" y="318" fill="#2740c9" font-size="11" font-family="monospace">In progress</text>
+          </g>
+        </svg>
+        <div class="cap"><h3>FMS Flow — Monitoring System</h3><p>Process flowchart with per-step TAT, planned vs actual dates and delay tracking.</p></div>
       </div>
 
       <!-- WORKFLOW TRACKING -->
@@ -555,18 +599,35 @@
   const sb=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.querySelectorAll('i[data-w]').forEach(i=>i.style.width=i.dataset.w+'%');sb.unobserve(e.target)}})},{threshold:.5});
   document.querySelectorAll('.sk').forEach(el=>sb.observe(el));
 
-  // dashboard animations: play once on scroll
+  // dashboard animations: loop continuously while card is on screen
   const reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-  function playCard(card){
+  function animateCard(card){
     card.classList.add('play');
-    // horizontal bars (width)
-    card.querySelectorAll('.gbarw').forEach(b=>{b.setAttribute('width','0');requestAnimationFrame(()=>{b.style.transition='width 1s cubic-bezier(.2,.7,.2,1)';b.setAttribute('width',b.dataset.w)})});
-    // donut rings
-    card.querySelectorAll('.dring').forEach(r=>{const d=r.dataset.dash;const o=r.dataset.offset;requestAnimationFrame(()=>{r.style.transition='stroke-dasharray 1.2s ease';r.setAttribute('stroke-dasharray',d);if(o)r.setAttribute('stroke-dashoffset',o)})});
-    // count up
+    // horizontal bars: reset to 0 then grow
+    card.querySelectorAll('.gbarw').forEach(b=>{b.style.transition='none';b.setAttribute('width','0');requestAnimationFrame(()=>{b.style.transition='width 1s cubic-bezier(.2,.7,.2,1)';b.setAttribute('width',b.dataset.w)})});
+    // vertical bars: reset then grow (re-trigger via class toggle)
+    card.classList.remove('play');void card.offsetWidth;card.classList.add('play');
+    // donut rings: reset to 0 then draw
+    card.querySelectorAll('.dring').forEach(r=>{const d=r.dataset.dash;const o=r.dataset.offset;r.style.transition='none';r.setAttribute('stroke-dasharray','0 999');requestAnimationFrame(()=>{r.style.transition='stroke-dasharray 1.2s ease';r.setAttribute('stroke-dasharray',d);if(o)r.setAttribute('stroke-dashoffset',o)})});
+    // count up from 0
     card.querySelectorAll('.count').forEach(t=>{const to=+t.dataset.to;const suf=t.dataset.suffix||'';if(reduce){t.textContent=to+suf;return}let s=null;const dur=900;function step(ts){if(!s)s=ts;const p=Math.min((ts-s)/dur,1);t.textContent=Math.round(p*to)+suf;if(p<1)requestAnimationFrame(step)}requestAnimationFrame(step)});
+    // lines: reset draw
+    card.querySelectorAll('.dline').forEach(l=>{l.style.transition='none';l.style.strokeDashoffset='1000';requestAnimationFrame(()=>{l.style.transition='stroke-dashoffset 1.4s ease';l.style.strokeDashoffset='0'})});
   }
-  const da=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){playCard(e.target);da.unobserve(e.target)}})},{threshold:.3});
+  const LOOP=4800;
+  const timers=new WeakMap();
+  const da=new IntersectionObserver((es)=>{es.forEach(e=>{
+    if(e.isIntersecting){
+      animateCard(e.target);
+      if(!reduce && !timers.get(e.target)){
+        const id=setInterval(()=>animateCard(e.target),LOOP);
+        timers.set(e.target,id);
+      }
+    } else {
+      const id=timers.get(e.target);
+      if(id){clearInterval(id);timers.delete(e.target);}
+    }
+  })},{threshold:.25});
   document.querySelectorAll('.anim').forEach(el=>da.observe(el));
 </script>
 </body>
